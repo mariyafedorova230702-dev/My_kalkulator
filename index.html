@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>МатериалКальк · Русский Лес Алматы</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        :root {
+            --p:    #7c3aed;
+            --p2:   #9333ea;
+            --rose: #db2777;
+            --rose2:#f472b6;
+            --mint: #0d9488;
+            --mint2:#2dd4bf;
+            --gold: #d97706;
+            --gold2:#f59e0b;
+            --ok:   #059669;
+            --t:    #1e0b4a;
+            --t2:   rgba(30,11,74,0.52);
+            --t3:   rgba(30,11,74,0.3);
+            --glass:  rgba(255,255,255,0.72);
+            --border: rgba(124,58,237,0.16);
+            --border2:rgba(124,58,237,0.08);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Nunito', system-ui, sans-serif;
+            background: #f3eeff;
+            color: var(--t);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* мягкий узор в фоне */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                radial-gradient(circle, rgba(167,139,250,0.18) 1.5px, transparent 1.5px),
+                radial-gradient(circle, rgba(196,181,253,0.12) 1px, transparent 1px);
+            background-size: 52px 52px, 83px 83px;
+            background-position: 0 0, 26px 41px;
+        }
+
+        /* ── BLOBS ── */
+        .blob { position:fixed; border-radius:50%; filter:blur(120px); pointer-events:none; z-index:0; }
+        .b1 { width:700px;height:700px;background:#c4b5fd;opacity:.35;top:-300px;left:-260px;animation:d1 16s ease-in-out infinite; }
+        .b2 { width:580px;height:580px;background:#fbcfe8;opacity:.4;bottom:-240px;right:-200px;animation:d2 19s ease-in-out infinite; }
+        .b3 { width:460px;height:460px;background:#99f6e4;opacity:.28;bottom:8%;left:4%;animation:d3 13s ease-in-out infinite; }
+        .b4 { width:320px;height:320px;background:#fde68a;opacity:.32;top:28%;right:12%;animation:d4 10s ease-in-out infinite; }
+
+        @keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(55px,38px)}}
+        @keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-45px,-52px)}}
+        @keyframes d3{0%,100%{transform:translate(0,0)}50%{transform:translate(36px,-36px)}}
+        @keyframes d4{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+
+        .wrap { max-width:1300px; margin:0 auto; padding:0 24px 80px; position:relative; z-index:1; }
+
+        /* ── HEADER ── */
+        .header { padding:44px 0 36px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+
+        .logo-mark {
+            width:64px; height:64px; border-radius:22px; flex-shrink:0;
+            background: linear-gradient(145deg, #7c3aed, #a855f7, #ec4899);
+            display:flex; align-items:center; justify-content:center; font-size:32px;
+            box-shadow: 0 4px 24px rgba(124,58,237,0.35), 0 0 0 4px rgba(167,139,250,0.25),
+                        inset 0 1px 0 rgba(255,255,255,0.35);
+        }
+
+        .header-text h1 {
+            font-size: clamp(1.8rem,4.5vw,2.8rem); font-weight:900; letter-spacing:-0.5px;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 50%, #0d9488 100%);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+        }
+        .header-text p { color:var(--t2); font-size:0.9rem; margin-top:4px; font-weight:600; }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 28px; margin-bottom: 18px;
+            box-shadow: 0 4px 32px rgba(124,58,237,0.1), 0 1px 0 rgba(255,255,255,0.9) inset;
+        }
+
+        .card-title { font-size:1.05rem; font-weight:800; display:flex; align-items:center; gap:9px; margin-bottom:20px; }
+        .card-title-row { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+
+        /* ── DROP ZONE ── */
+        .drop-zone {
+            border: 2px dashed rgba(124,58,237,0.3); border-radius:16px; padding:30px 20px;
+            text-align:center; cursor:pointer; position:relative; transition:all 0.3s;
+            background: radial-gradient(ellipse at 50% 0%, rgba(167,139,250,0.1), transparent 70%);
+        }
+        .drop-zone:hover,.drop-zone.drag-over {
+            border-color:var(--p);
+            background: radial-gradient(ellipse at 50% 0%, rgba(167,139,250,0.18), transparent 70%);
+            box-shadow: 0 0 30px rgba(124,58,237,0.1);
+        }
+        .drop-zone input[type="file"] { position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%; }
+        .drop-icon { font-size:38px; margin-bottom:10px; display:block; }
+        .drop-title { font-size:0.95rem; font-weight:700; margin-bottom:4px; }
+        .drop-hint { color:var(--t2); font-size:0.8rem; }
+
+        /* ── BUTTONS ── */
+        .btn {
+            display:inline-flex; align-items:center; gap:7px;
+            padding:10px 20px; border-radius:14px; border:none;
+            cursor:pointer; font-family:'Nunito',sans-serif;
+            font-size:0.85rem; font-weight:700; transition:all 0.2s; white-space:nowrap;
+        }
+        .btn-ghost { background:rgba(124,58,237,0.08); color:var(--t); border:1px solid rgba(124,58,237,0.22); }
+        .btn-ghost:hover { background:rgba(124,58,237,0.15); }
+        .btn-primary { background:linear-gradient(135deg,#7c3aed,#db2777); color:white; box-shadow:0 4px 18px rgba(124,58,237,0.35); }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(124,58,237,0.5); }
+        .btn-ok { background:linear-gradient(135deg,#0d9488,#059669); color:white; box-shadow:0 4px 18px rgba(13,148,136,0.35); }
+        .btn-ok:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(13,148,136,0.5); }
+        .btn-danger { background:rgba(219,39,119,0.08); color:var(--rose); border:1px solid rgba(219,39,119,0.22); }
+        .btn-danger:hover { background:rgba(219,39,119,0.15); }
+        .btn-sm { padding:6px 14px; font-size:0.8rem; border-radius:10px; }
+
+        /* ── FORM ── */
+        .manual-form { display:none; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-top:18px; padding-top:18px; border-top:1px solid var(--border2); }
+        .manual-form.show { display:flex; }
+        .field { display:flex; flex-direction:column; gap:6px; flex:1; min-width:130px; }
+        .field label { font-size:0.72rem; color:var(--t2); text-transform:uppercase; letter-spacing:0.6px; font-weight:700; }
+
+        input, select {
+            background: rgba(255,255,255,0.75);
+            border: 1px solid rgba(124,58,237,0.22);
+            border-radius:12px; color:var(--t);
+            padding:10px 14px; font-size:0.88rem; font-family:'Nunito',sans-serif;
+            outline:none; transition:all 0.2s; width:100%;
+        }
+        input:focus, select:focus {
+            border-color:var(--p); background:white;
+            box-shadow:0 0 0 3px rgba(124,58,237,0.18);
+        }
+        input::placeholder { color:var(--t3); }
+        select option { background:#fff; color:var(--t); }
+
+        /* ── CONTROLS ── */
+        .controls-bar { display:none; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:20px; }
+        .controls-bar.show { display:flex; }
+        .search-wrap { flex:1; min-width:200px; position:relative; }
+        .search-wrap svg { position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:0.35;pointer-events:none; }
+        .search-wrap input { padding-left:38px; }
+
+        .tabs { display:flex; background:rgba(124,58,237,0.06); border:1px solid var(--border2); border-radius:14px; padding:4px; gap:4px; }
+        .tab { padding:7px 16px; border-radius:10px; border:none; background:transparent; color:var(--t2); cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.82rem; font-weight:700; transition:all 0.2s; }
+        .tab.active { background:linear-gradient(135deg,var(--p),#db2777); color:white; box-shadow:0 3px 12px rgba(124,58,237,0.4); }
+
+        .waste-row { display:flex; align-items:center; gap:9px; background:rgba(124,58,237,0.06); border:1px solid var(--border2); border-radius:14px; padding:8px 14px; font-size:0.82rem; color:var(--t2); font-weight:600; }
+        .waste-row select { padding:2px 8px; font-size:0.82rem; border-radius:8px; width:auto; }
+
+        /* ── GRID ── */
+        .products-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:16px; }
+
+        /* ── PRODUCT CARD ── */
+        .pcard {
+            background: rgba(255,255,255,0.78);
+            border: 1px solid rgba(124,58,237,0.12);
+            border-radius:20px; padding:20px;
+            position:relative; overflow:hidden;
+            animation:fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+            transition:all 0.25s;
+            box-shadow: 0 2px 16px rgba(124,58,237,0.07);
+        }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(18px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+
+        .pcard::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:2px;
+            background:linear-gradient(90deg, #7c3aed, #db2777, #2dd4bf);
+            opacity:0; transition:opacity 0.3s;
+        }
+        .pcard:hover { border-color:rgba(124,58,237,0.25); box-shadow:0 8px 32px rgba(124,58,237,0.14); transform:translateY(-2px); }
+        .pcard:hover::before { opacity:1; }
+        .pcard.active-card { border-color:rgba(124,58,237,0.32); background:rgba(250,245,255,0.95); box-shadow:0 8px 36px rgba(124,58,237,0.16); }
+        .pcard.active-card::before { opacity:1; }
+
+        .pcard-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:6px; }
+        .pcard-name { font-size:0.88rem; font-weight:700; line-height:1.4; flex:1; color:var(--t); }
+        .pcard-cat { font-size:0.67rem; color:var(--t3); text-transform:uppercase; letter-spacing:0.6px; font-weight:700; margin-bottom:12px; }
+        .pcard-actions { display:flex; gap:5px; align-items:center; flex-shrink:0; }
+
+        /* ── BADGES ── */
+        .badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:8px; font-size:0.71rem; font-weight:800; letter-spacing:0.3px; }
+        .badge-m2  { background:rgba(124,58,237,0.1);  color:#6d28d9; border:1px solid rgba(124,58,237,0.25); }
+        .badge-lm  { background:rgba(13,148,136,0.1);  color:#0f766e; border:1px solid rgba(13,148,136,0.25); }
+        .badge-pcs { background:rgba(217,119,6,0.1);   color:#b45309; border:1px solid rgba(217,119,6,0.25); }
+
+        /* ── META ── */
+        .pcard-meta { display:flex; gap:16px; margin-bottom:14px; flex-wrap:wrap; }
+        .meta { display:flex; flex-direction:column; gap:3px; }
+        .meta-lbl { font-size:0.67rem; color:var(--t3); text-transform:uppercase; letter-spacing:0.5px; font-weight:700; }
+        .meta-val { font-size:0.88rem; font-weight:700; color:var(--t); }
+
+        /* ── MODE SWITCHER ── */
+        .mode-sw { display:flex; margin-bottom:12px; background:rgba(124,58,237,0.06); border:1px solid rgba(124,58,237,0.14); border-radius:12px; padding:3px; gap:3px; }
+        .ms-btn { flex:1; padding:6px 8px; border:none; border-radius:9px; background:transparent; color:var(--t2); cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.76rem; font-weight:700; transition:all 0.2s; line-height:1.2; }
+        .ms-btn.ms-on { background:linear-gradient(135deg,#7c3aed,#db2777); color:white; box-shadow:0 2px 10px rgba(124,58,237,0.3); }
+
+        /* ── INPUT ── */
+        .pcard-input-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+        .pcard-input { flex:1; text-align:center; font-size:1.05rem; font-weight:800; padding:10px 14px; border-radius:12px; }
+        .unit-lbl { font-size:0.82rem; color:var(--t2); white-space:nowrap; font-weight:700; }
+
+        /* ── RESULT ── */
+        .pcard-result { display:none; background:linear-gradient(135deg,rgba(124,58,237,0.07),rgba(219,39,119,0.04)); border:1px solid rgba(124,58,237,0.18); border-radius:14px; padding:12px 16px; }
+        .pcard-result.show { display:block; }
+        .res-row { display:flex; justify-content:space-between; align-items:center; padding:3px 0; }
+        .res-lbl { font-size:0.8rem; color:var(--t2); font-weight:600; }
+        .res-val { font-size:0.9rem; font-weight:800; color:var(--t); }
+        .res-val.big { color:var(--p); font-size:1rem; }
+        .res-val.glow { background:linear-gradient(135deg,#059669,#0d9488); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-size:1.05rem; }
+        .res-sep { border:none; border-top:1px solid rgba(124,58,237,0.1); margin:7px 0; }
+
+        /* ── EMPTY ── */
+        .empty { grid-column:1/-1; text-align:center; padding:70px 20px; color:var(--t2); }
+        .empty-icon { font-size:48px; margin-bottom:16px; display:block; opacity:0.45; }
+        .empty-title { font-size:1.05rem; font-weight:700; color:var(--t); opacity:0.45; margin-bottom:7px; }
+
+        /* ── SUMMARY ── */
+        .summary-section { display:none; }
+        .summary-section.show { display:block; }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:14px; margin-bottom:22px; }
+        .stat-box { background:rgba(255,255,255,0.8); border:1px solid rgba(124,58,237,0.14); border-radius:16px; padding:16px 18px; text-align:center; box-shadow:0 2px 16px rgba(124,58,237,0.08); }
+        .stat-val { font-size:1.8rem; font-weight:900; background:linear-gradient(135deg,#7c3aed,#db2777,#0d9488); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.15; }
+        .stat-lbl { font-size:0.75rem; color:var(--t2); margin-top:4px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; }
+
+        .summary-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:14px; border:1px solid var(--border2); }
+        table { width:100%; border-collapse:collapse; font-size:0.84rem; }
+        thead th { text-align:left; padding:12px 16px; color:var(--t2); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.6px; font-weight:800; background:rgba(124,58,237,0.04); border-bottom:1px solid var(--border2); }
+        tbody td { padding:12px 16px; border-bottom:1px solid rgba(124,58,237,0.05); font-weight:600; color:var(--t); }
+        tbody tr:last-child td { border-bottom:none; }
+        tbody tr:hover td { background:rgba(124,58,237,0.03); }
+        .total-row td { border-top:1px solid rgba(124,58,237,0.15); font-weight:800; padding-top:16px; }
+
+        /* ── TOAST ── */
+        .toast { position:fixed; bottom:28px; right:28px; background:rgba(255,255,255,0.95); border:1px solid rgba(124,58,237,0.25); border-radius:16px; padding:14px 22px; display:flex; align-items:center; gap:10px; font-size:0.88rem; font-weight:700; color:var(--t); z-index:999; backdrop-filter:blur(20px); box-shadow:0 8px 40px rgba(124,58,237,0.2); transform:translateY(80px); opacity:0; transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+        .toast.show { transform:translateY(0); opacity:1; }
+
+        .count-chip { background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.2); border-radius:10px; padding:4px 12px; font-size:0.78rem; color:var(--p); font-weight:700; }
+
+        .del-btn { width:26px; height:26px; border-radius:8px; border:none; background:rgba(219,39,119,0.08); color:var(--rose); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:12px; transition:all 0.2s; flex-shrink:0; font-weight:800; }
+        .del-btn:hover { background:rgba(219,39,119,0.18); }
+
+        ::-webkit-scrollbar { width:5px; height:5px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:rgba(124,58,237,0.3); border-radius:3px; }
+        ::-webkit-scrollbar-thumb:hover { background:var(--p); }
+
+        @media (max-width:680px) { .products-grid{grid-template-columns:1fr} .controls-bar{flex-direction:column;align-items:stretch} .stats-grid{grid-template-columns:1fr 1fr} }
+        @media (max-width:440px) { .header-text h1{font-size:1.7rem} .stats-grid{grid-template-columns:1fr} }
+    </style>
+</head>
+<body>
+<div class="b1 blob"></div>
+<div class="b2 blob"></div>
+<div class="b3 blob"></div>
+<div class="b4 blob"></div>
+
+<div class="wrap">
+
+    <header class="header">
+        <div class="logo-mark">🌿</div>
+        <div class="header-text">
+            <h1>МатериалКальк</h1>
+            <p>Русский Лес Алматы · 302 позиции · м², пог.м и шт · цены в ₸</p>
+        </div>
+    </header>
+
+    <!-- CALCULATOR -->
+    <div class="card">
+        <div class="card-title-row">
+            <div class="card-title">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="color:var(--p2)"><rect x="4" y="2" width="16" height="20" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 6h8M8 10h8M8 14h4"/></svg>
+                Калькулятор
+                <span class="count-chip" id="countChip" style="display:none"></span>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="resetAll()" style="display:none" id="resetBtn">
+                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Сбросить
+            </button>
+        </div>
+
+        <div class="controls-bar" id="controlsBar">
+            <div class="search-wrap">
+                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/></svg>
+                <input type="text" id="searchInput" placeholder="Поиск: вагонка, 96, сосна АВ 4, 90 90 …" oninput="filter()">
+            </div>
+            <div class="tabs" id="filterTabs">
+                <button class="tab active" onclick="setFilter('all',this)">✨ Все</button>
+                <button class="tab" onclick="setFilter('м²',this)">м²</button>
+                <button class="tab" onclick="setFilter('пог.м',this)">Пог.м</button>
+                <button class="tab" onclick="setFilter('шт',this)">Шт</button>
+            </div>
+            <div class="waste-row">
+                <span>Запас:</span>
+                <select id="wasteSelect" onchange="recalcAll()">
+                    <option value="0">0%</option>
+                    <option value="5" selected>5%</option>
+                    <option value="10">10%</option>
+                    <option value="15">15%</option>
+                    <option value="20">20%</option>
+                    <option value="25">25%</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="products-grid" id="grid">
+            <div class="empty"><span class="empty-icon">✨</span><div class="empty-title">Загрузка...</div></div>
+        </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="card summary-section" id="summarySection">
+        <div class="card-title-row">
+            <div class="card-title">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="color:var(--mint2)"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                Итого по заказу
+            </div>
+            <button class="btn btn-ok btn-sm" onclick="exportCSV()">
+                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Экспорт CSV
+            </button>
+        </div>
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="summary-table-wrap">
+            <table>
+                <thead><tr>
+                    <th>Позиция</th><th>Тип</th><th>Введено</th>
+                    <th>1 шт =</th><th>Результат</th><th>Цена/ед. ₸</th><th>Сумма ₸</th>
+                </tr></thead>
+                <tbody id="summaryBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- UPLOAD (в конце) -->
+    <div class="card">
+        <div class="card-title-row">
+            <div class="card-title">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="color:var(--p2)"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Прайс-лист
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn btn-ghost btn-sm" onclick="toggleManual()" id="manualToggle">
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    Вручную
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="clearAll()" id="clearBtn" style="display:none">
+                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Очистить
+                </button>
+            </div>
+        </div>
+
+        <div class="drop-zone" id="dropZone">
+            <input type="file" id="fileInput" accept=".csv" onchange="handleFile(event)">
+            <span class="drop-icon">✅</span>
+            <div class="drop-title">Прайс Русский Лес загружен · 302 позиции</div>
+            <div class="drop-hint">Перетащите свой CSV для замены · Формат: Название, Тип, Размер штуки, Цена</div>
+        </div>
+
+        <div class="manual-form" id="manualForm">
+            <div class="field">
+                <label>Название</label>
+                <input id="mName" type="text" placeholder="Доска обрезная">
+            </div>
+            <div class="field" style="max-width:145px">
+                <label>Тип</label>
+                <select id="mType" onchange="toggleSizeField()">
+                    <option value="м²">м² (квадратные)</option>
+                    <option value="пог.м">пог.м (погонные)</option>
+                    <option value="шт">шт (поштучно)</option>
+                </select>
+            </div>
+            <div class="field" style="max-width:130px" id="mSizeField">
+                <label>Размер штуки</label>
+                <input id="mSize" type="number" placeholder="0.36" step="0.001" min="0.001">
+            </div>
+            <div class="field" style="max-width:130px">
+                <label id="mPriceLbl">Цена за ед. ₸</label>
+                <input id="mPrice" type="number" placeholder="5200" min="0" step="0.01">
+            </div>
+            <button class="btn btn-primary" onclick="addManual()" style="margin-top:2px">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                Добавить
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<script>
+const CATALOG = [{"id":1,"n":"OSB 3 Е1 НШ — 12 мм × 1250 мм × 2.5 м","t":"шт","s":3.125,"p":7300.0,"c":"OSB"},{"id":2,"n":"OSB 3 Е1 НШ — 15 мм × 1250 мм × 2.5 м","t":"шт","s":3.125,"p":9350.0,"c":"OSB"},{"id":3,"n":"OSB 3 Е1 НШ — 6 мм × 1250 мм × 2.5 м","t":"шт","s":3.125,"p":4950.0,"c":"OSB"},{"id":4,"n":"OSB 3 Е1 НШ — 8 мм × 1250 мм × 2.5 м","t":"шт","s":3.125,"p":6050.0,"c":"OSB"},{"id":5,"n":"OSB влагостойкая — 12 мм × 1250 мм × 2.5 м","t":"шт","s":3.125,"p":7700.0,"c":"OSB"},{"id":6,"n":"OSB влагостойкая — 15 мм × 1250 мм × 2.5 м","t":"шт","s":3.125,"p":8800.0,"c":"OSB"},{"id":7,"n":"OSB влагостойкая — 18 мм × 1250 мм × 2.5 м","t":"шт","s":3.125,"p":10600.0,"c":"OSB"},{"id":8,"n":"Блок хаус АВ — 28 мм × 146 мм × 4 м","t":"м²","s":0.584,"p":11000.0,"c":"блок-хаус"},{"id":9,"n":"Блок хаус В — 30 мм × 120 мм × 3 м","t":"м²","s":0.36,"p":10500.0,"c":"блок-хаус"},{"id":10,"n":"Блок хаус С — 30 мм × 120 мм × 3 м","t":"м²","s":0.36,"p":9500.0,"c":"блок-хаус"},{"id":11,"n":"Пиломатериал обрезной Брус 1 3 сорт — 90 мм × 90 мм × 6 м","t":"м²","s":0.54,"p":6000.0,"c":"брус"},{"id":12,"n":"Брус клеёный лиственница — 120 мм × 120 мм × 3 м","t":"пог.м","s":3.0,"p":8500.0,"c":"брусок"},{"id":13,"n":"Брус лиственница — 45 мм × 105 мм × 4 м","t":"пог.м","s":4.0,"p":2500.0,"c":"брусок"},{"id":14,"n":"Брус лиственница — 45 мм × 51 мм × 4 м","t":"пог.м","s":4.0,"p":850.0,"c":"брусок"},{"id":15,"n":"Брусок клеёный — 40 мм × 40 мм × 3 м","t":"пог.м","s":3.0,"p":650.0,"c":"брусок"},{"id":16,"n":"Брусок лиственница — 16 мм × 40 мм × 3 м","t":"пог.м","s":3.0,"p":265.0,"c":"брусок"},{"id":17,"n":"Брусок лиственница — 18 мм × 45 мм × 4 м","t":"пог.м","s":4.0,"p":320.0,"c":"брусок"},{"id":18,"n":"Брусок лиственница — 18 мм × 60 мм × 4 м","t":"пог.м","s":4.0,"p":530.0,"c":"брусок"},{"id":19,"n":"Брусок лиственница — 24 мм × 48 мм × 4 м","t":"пог.м","s":4.0,"p":580.0,"c":"брусок"},{"id":20,"n":"Брусок ромбовидный 1 сорт — 28 мм × 68 мм × 2 м","t":"пог.м","s":2.0,"p":550.0,"c":"брусок"},{"id":21,"n":"Брусок строганный 1 сорт — 30 мм × 40 мм × 3 м","t":"пог.м","s":3.0,"p":480.0,"c":"брусок"},{"id":22,"n":"Брусок строганный 2 сорт — 30 мм × 40 мм × 3 м","t":"пог.м","s":3.0,"p":460.0,"c":"брусок"},{"id":23,"n":"Брусок строганный 3 сорт — 30 мм × 40 мм × 3-4 м","t":"пог.м","s":3.5,"p":350.0,"c":"брусок"},{"id":24,"n":"Брусок строганный 3 сорт — 40 мм × 60 мм × 3-4 м","t":"пог.м","s":3.5,"p":700.0,"c":"брусок"},{"id":25,"n":"Брусок строганный АВ — 35 мм × 45 мм × 3 м","t":"пог.м","s":3.0,"p":530.0,"c":"брусок"},{"id":26,"n":"Брусок строганный АВ — 40 мм × 40 мм × 2-6 м","t":"пог.м","s":4.0,"p":650.0,"c":"брусок"},{"id":27,"n":"Брусок строганный АВ — 40 мм × 50 мм × 3 м","t":"пог.м","s":3.0,"p":700.0,"c":"брусок"},{"id":28,"n":"Брусок строганный АВ — 40 мм × 60 мм × 2-3 м","t":"пог.м","s":2.5,"p":900.0,"c":"брусок"},{"id":29,"n":"Брусок строганный АВ — 45 мм × 45 мм × 3-4 м","t":"пог.м","s":3.5,"p":795.0,"c":"брусок"},{"id":30,"n":"Брусок строганный АВ — 45 мм × 60 мм × 4 м","t":"пог.м","s":4.0,"p":1050.0,"c":"брусок"},{"id":31,"n":"Брусок строганный АВ — 50 мм × 50 мм × 2-3 м","t":"пог.м","s":2.5,"p":980.0,"c":"брусок"},{"id":32,"n":"Брусок строганный АВ — 50 мм × 65 мм × 3-4 м","t":"пог.м","s":3.5,"p":1400.0,"c":"брусок"},{"id":33,"n":"Брусок строганный АВ — 50 мм × 80 мм × 3-4 м","t":"пог.м","s":3.5,"p":1750.0,"c":"брусок"},{"id":34,"n":"Брусок строганный В — 45 мм × 45 мм × 3 м","t":"пог.м","s":3.0,"p":780.0,"c":"брусок"},{"id":35,"n":"Брусок строганный н/к — 30 мм × 30 мм × 3-4 м","t":"пог.м","s":3.5,"p":350.0,"c":"брусок"},{"id":36,"n":"Брусок строганный н/к — 40 мм × 60 мм × 3 м","t":"пог.м","s":3.0,"p":500.0,"c":"брусок"},{"id":37,"n":"Брусок строганный н/к — 45 мм × 45 мм × 3 м","t":"пог.м","s":3.0,"p":450.0,"c":"брусок"},{"id":38,"n":"Брусок строганный н/к — 50 мм × 50 мм × 4 м","t":"пог.м","s":4.0,"p":450.0,"c":"брусок"},{"id":39,"n":"Брусок строганный профил АВ — 50 мм × 70 мм × 2-4 м","t":"пог.м","s":3.0,"p":1550.0,"c":"брусок"},{"id":40,"n":"Брусок строганный С — 45 мм × 45 мм × 2.5-3 м","t":"пог.м","s":2.75,"p":720.0,"c":"брусок"},{"id":41,"n":"Брусок строганный С — 50 мм × 50 мм × 3 м","t":"пог.м","s":3.0,"p":750.0,"c":"брусок"},{"id":42,"n":"Брусок строганный С — 75 мм × 75 мм × 2.85 м","t":"пог.м","s":2.85,"p":1350.0,"c":"брусок"},{"id":43,"n":"Брусок строганный — 10 мм × 30 мм × 2.7-3 м","t":"пог.м","s":2.85,"p":130.0,"c":"брусок"},{"id":44,"n":"Брусок строганный — 10 мм × 45 мм × 3 м","t":"пог.м","s":3.0,"p":190.0,"c":"брусок"},{"id":45,"n":"Брусок строганный — 15 мм × 30 мм × 3 м","t":"пог.м","s":3.0,"p":180.0,"c":"брусок"},{"id":46,"n":"Брусок строганный — 16 мм × 45 мм × 3 м","t":"пог.м","s":3.0,"p":300.0,"c":"брусок"},{"id":47,"n":"Брусок строганный — 18 мм × 70 мм × 2.7 м","t":"пог.м","s":2.7,"p":500.0,"c":"брусок"},{"id":48,"n":"Брусок строганный — 20 мм × 30 мм × 2 м","t":"пог.м","s":2.0,"p":250.0,"c":"брусок"},{"id":49,"n":"Брусок строганный — 20 мм × 45 мм × 3 м","t":"пог.м","s":3.0,"p":350.0,"c":"брусок"},{"id":50,"n":"Брусок строганный — 21 мм × 45 мм × 3 м","t":"пог.м","s":3.0,"p":350.0,"c":"брусок"},{"id":51,"n":"Брусок строганный — 24 мм × 48 мм × 3 м","t":"пог.м","s":3.0,"p":550.0,"c":"брусок"},{"id":52,"n":"Брусок термо — 40 мм × 60 мм × 2-3 м","t":"пог.м","s":2.5,"p":1350.0,"c":"брусок"},{"id":53,"n":"Вагонка евро сосна АВ 10 шт — 12.5 мм × 96 мм × 2.5 м","t":"м²","s":0.24,"p":5200.0,"c":"вагонка"},{"id":54,"n":"Вагонка евро сосна АВ 10 шт — 12.5 мм × 96 мм × 4 м","t":"м²","s":0.384,"p":5500.0,"c":"вагонка"},{"id":55,"n":"Вагонка евро сосна АВ — 12.5 мм × 90 мм × 2-6 м","t":"м²","s":0.36,"p":5500.0,"c":"вагонка"},{"id":56,"n":"Вагонка евро сосна АВС 10 шт — 12.5 мм × 96 мм × 4 м","t":"м²","s":0.384,"p":3800.0,"c":"вагонка"},{"id":57,"n":"Вагонка евро сосна С 10 шт — 12.5 мм × 96 мм × 2-2.5 м","t":"м²","s":0.216,"p":3800.0,"c":"вагонка"},{"id":58,"n":"Вагонка евро сосна С 10 шт — 12.5 мм × 96 мм × 4 м","t":"м²","s":0.384,"p":4000.0,"c":"вагонка"},{"id":59,"n":"Вагонка евро сосна С — 12.5 мм × 90 мм × 4-6 м","t":"м²","s":0.45,"p":3500.0,"c":"вагонка"},{"id":60,"n":"Вагонка липа сорт А 10 шт — 15 мм × 96 мм × 2.4-2.9 м","t":"м²","s":0.2544,"p":15600.0,"c":"вагонка"},{"id":61,"n":"Вагонка липа сорт Э 10 шт — 15 мм × 96 мм × 2-2.7 м","t":"м²","s":0.2256,"p":17000.0,"c":"вагонка"},{"id":62,"n":"Вагонка осина сорт В 10 шт — 15 мм × 90 мм × 2-3 м","t":"м²","s":0.225,"p":11500.0,"c":"вагонка"},{"id":63,"n":"Вагонка осина сорт Э 10 шт — 15 мм × 90 мм × 1.8 м","t":"м²","s":0.162,"p":10000.0,"c":"вагонка"},{"id":64,"n":"Вагонка осина сорт Э 10 шт — 15 мм × 90 мм × 2-3 м","t":"м²","s":0.225,"p":13000.0,"c":"вагонка"},{"id":65,"n":"Вагонка софт лайн сосна С — 14 мм × 120 мм × 4 м","t":"м²","s":0.48,"p":4500.0,"c":"вагонка"},{"id":66,"n":"Вагонка штиль кедр АВ 10 шт — 12.5 мм × 110 мм × 2.2-3 м","t":"м²","s":0.286,"p":7500.0,"c":"вагонка"},{"id":67,"n":"Вагонка штиль кедр В 10 шт — 12.5 мм × 110 мм × 2-3 м","t":"м²","s":0.275,"p":6500.0,"c":"вагонка"},{"id":68,"n":"Вагонка штиль лиственница А 6 шт — 14 мм × 90 мм × 4 м","t":"м²","s":0.36,"p":13500.0,"c":"вагонка"},{"id":69,"n":"Вагонка штиль лиственница В 8 шт — 14 мм × 90 мм × 3 м","t":"м²","s":0.27,"p":8000.0,"c":"вагонка"},{"id":70,"n":"Вагонка штиль сосна А — 14 мм × 120 мм × 3 м","t":"м²","s":0.36,"p":10500.0,"c":"вагонка"},{"id":71,"n":"Вагонка штиль сосна А — 14 мм × 90 мм × 3 м","t":"м²","s":0.27,"p":10500.0,"c":"вагонка"},{"id":72,"n":"Вагонка штиль сосна АВ 10 шт — 11 мм × 118 мм × 2.98 м","t":"м²","s":0.3516,"p":4500.0,"c":"вагонка"},{"id":73,"n":"Вагонка штиль сосна АВ 10 шт — 12.5 мм × 110 мм × 2.5 м","t":"м²","s":0.275,"p":6600.0,"c":"вагонка"},{"id":74,"n":"Вагонка штиль сосна АВ — 12.5 мм × 121 мм × 4 м","t":"м²","s":0.484,"p":5500.0,"c":"вагонка"},{"id":75,"n":"Вагонка штиль сосна АВ — 14 мм × 120 мм × 3 м","t":"м²","s":0.36,"p":5800.0,"c":"вагонка"},{"id":76,"n":"Вагонка штиль сосна АВ — 14 мм × 145 мм × 3 м","t":"м²","s":0.435,"p":5800.0,"c":"вагонка"},{"id":77,"n":"Вагонка штиль сосна АВ — 14 мм × 146 мм × 2-4 м","t":"м²","s":0.438,"p":5800.0,"c":"вагонка"},{"id":78,"n":"Вагонка штиль сосна АВС 10 шт — 11.5 мм × 118 мм × 4 м","t":"м²","s":0.472,"p":4800.0,"c":"вагонка"},{"id":79,"n":"Вагонка штиль сосна ВС — 14 мм × 120 мм × 3 м","t":"м²","s":0.36,"p":4500.0,"c":"вагонка"},{"id":80,"n":"Вагонка штиль сосна С — 12.5 мм × 121 мм × 3 м","t":"м²","s":0.363,"p":4000.0,"c":"вагонка"},{"id":81,"n":"Вагонка штиль сосна С — 14 мм × 146 мм × 4 м","t":"м²","s":0.584,"p":4500.0,"c":"вагонка"},{"id":82,"n":"Вагонка штиль сосна С — 14 мм × 90 мм × 2.7 м","t":"м²","s":0.243,"p":4500.0,"c":"вагонка"},{"id":83,"n":"Вагонка штиль сосна экстра — 14 мм × 90 мм × 3 м","t":"м²","s":0.27,"p":11100.0,"c":"вагонка"},{"id":84,"n":"Галтель липа — 15 мм × 35 мм × 2.5 м","t":"м²","s":0.0875,"p":950.0,"c":"вагонка"},{"id":85,"n":"Наличник липа Э — 15 мм × 70 мм × 2.7 м","t":"м²","s":0.189,"p":1900.0,"c":"вагонка"},{"id":86,"n":"Полок кедр АВ — 28 мм × 90 мм × 3 м","t":"м²","s":0.27,"p":1500.0,"c":"вагонка"},{"id":87,"n":"Уголок липа — 25 мм × 25 мм × 2.5 м","t":"м²","s":0.0625,"p":1500.0,"c":"вагонка"},{"id":88,"n":"Лиственница АВ — 27 мм × 145 мм × 4 м","t":"шт","s":0.58,"p":2600.0,"c":"доска"},{"id":89,"n":"Лиственница АВ — 45 мм × 140 мм × 6 м","t":"шт","s":0.84,"p":4190.0,"c":"доска"},{"id":90,"n":"Лиственница В — 27 мм × 142 мм × 3 м","t":"шт","s":0.426,"p":1775.0,"c":"доска"},{"id":91,"n":"Лиственница В — 45 мм × 105 мм × 4 м","t":"шт","s":0.42,"p":2500.0,"c":"доска"},{"id":92,"n":"Лиственница клеенная В — 45 мм × 105 мм × 3 м","t":"шт","s":0.315,"p":2700.0,"c":"доска"},{"id":93,"n":"Лиственница клеенослоист. АВ — 45 мм × 105 мм × 3 м","t":"шт","s":0.315,"p":2800.0,"c":"доска"},{"id":94,"n":"Лиственница клеенослоист. В — 30 мм × 105 мм × 2.7-3 м","t":"шт","s":0.2993,"p":1800.0,"c":"доска"},{"id":95,"n":"Лиственница профил В — 20 мм × 140 мм × 3 м","t":"шт","s":0.42,"p":1500.0,"c":"доска"},{"id":96,"n":"Лиственница профил В — 20 мм × 90 мм × 3-4 м","t":"шт","s":0.315,"p":950.0,"c":"доска"},{"id":97,"n":"Лиственница профил ВС — 20 мм × 100 мм × 3 м","t":"шт","s":0.3,"p":1250.0,"c":"доска"},{"id":98,"n":"Лиственница С — 20 мм × 96 мм × 4 м","t":"шт","s":0.384,"p":950.0,"c":"доска"},{"id":99,"n":"Лиственница С — 27 мм × 142 мм × 3 м","t":"шт","s":0.426,"p":1560.0,"c":"доска"},{"id":100,"n":"Лиственница С — 45 мм × 145 мм × 3.6 м","t":"шт","s":0.522,"p":3400.0,"c":"доска"},{"id":101,"n":"Лиственница С — 45 мм × 155 мм × 2.7 м","t":"шт","s":0.4185,"p":3700.0,"c":"доска"},{"id":102,"n":"Лиственница — 45 мм × 140 мм × 1.5 м","t":"шт","s":0.21,"p":3400.0,"c":"доска"},{"id":103,"n":"Пиломатериал обрезной Доска 1 2 сорт — 50 мм × 100 мм × 6 м","t":"м²","s":0.6,"p":6000.0,"c":"доска"},{"id":104,"n":"Пиломатериал обрезной Доска 1 2 сорт — 50 мм × 150 мм × 6 м","t":"м²","s":0.9,"p":6000.0,"c":"доска"},{"id":105,"n":"Пиломатериал обрезной Доска 1 2 сорт — 50 мм × 200 мм × 6 м","t":"м²","s":1.2,"p":6000.0,"c":"доска"},{"id":106,"n":"Пиломатериал обрезной Доска 1 2с, вл 16 18% — 23 мм × 100 мм × 6 м","t":"м²","s":0.6,"p":6000.0,"c":"доска"},{"id":107,"n":"Пиломатериал обрезной Доска 1 2с, вл 16 18% — 23 мм × 200 мм × 6 м","t":"м²","s":1.2,"p":6000.0,"c":"доска"},{"id":108,"n":"Пиломатериал обрезной Доска 1 2с, вл 16 18% — 23 мм × 200 мм × 6 м","t":"м²","s":1.2,"p":6000.0,"c":"доска"},{"id":109,"n":"Пиломатериал обрезной Доска 2 3 сорт — 50 мм × 150 мм × 6 м","t":"м²","s":0.9,"p":6000.0,"c":"доска"},{"id":110,"n":"Пиломатериал обрезной Доска ест. влажность — 25 мм × 100 мм × 6 м","t":"м²","s":0.6,"p":6000.0,"c":"доска"},{"id":111,"n":"Пиломатериал обрезной Доска ест. влажность — 25 мм × 150 мм × 6 м","t":"м²","s":0.9,"p":6000.0,"c":"доска"},{"id":112,"n":"Пиломатериал обрезной Доска — 23 мм × 140 мм × 6 м","t":"м²","s":0.84,"p":6000.0,"c":"доска"},{"id":113,"n":"Строганная дощечка АВ — 16 мм × 94 мм × 3 м","t":"шт","s":0.282,"p":650.0,"c":"доска"},{"id":114,"n":"Строганная дощечка АВ — 20 мм × 95 мм × 2-4 м","t":"шт","s":0.285,"p":820.0,"c":"доска"},{"id":115,"n":"Строганная дощечка АВ — 27 мм × 95 мм × 2.98 м","t":"шт","s":0.2831,"p":1100.0,"c":"доска"},{"id":116,"n":"Строганная дощечка АВ — 30 мм × 105 мм × 4 м","t":"шт","s":0.42,"p":1350.0,"c":"доска"},{"id":117,"n":"Строганная дощечка АВ — 30 мм × 120 мм × 4 м","t":"шт","s":0.48,"p":1500.0,"c":"доска"},{"id":118,"n":"Строганная дощечка АВ — 45 мм × 145 мм × 6 м","t":"шт","s":0.87,"p":2800.0,"c":"доска"},{"id":119,"n":"Строганная дощечка АВ — 45 мм × 190 мм × 6 м","t":"шт","s":1.14,"p":3900.0,"c":"доска"},{"id":120,"n":"Строганная дощечка АВ — 45 мм × 95 мм × 5.4 м","t":"шт","s":0.513,"p":1800.0,"c":"доска"},{"id":121,"n":"Строганная дощечка В — 20 мм × 146 мм × 3-4 м","t":"шт","s":0.511,"p":1200.0,"c":"доска"},{"id":122,"n":"Строганная дощечка В — 20 мм × 95 мм × 3 м","t":"шт","s":0.285,"p":700.0,"c":"доска"},{"id":123,"n":"Строганная дощечка клеенослоист. АВ — 30 мм × 105 мм × 3 м","t":"шт","s":0.315,"p":1600.0,"c":"доска"},{"id":124,"n":"Строганная дощечка клён береза — 45 мм × 120 мм × 3 м","t":"шт","s":0.36,"p":2500.0,"c":"доска"},{"id":125,"n":"Строганная дощечка осина профил — 20 мм × 90 мм × 4 м","t":"шт","s":0.36,"p":850.0,"c":"доска"},{"id":126,"n":"Строганная дощечка осина С — 28 мм × 90 мм × 4 м","t":"шт","s":0.36,"p":1000.0,"c":"доска"},{"id":127,"n":"Строганная дощечка профил АВ — 20 мм × 120 мм × 3-6 м","t":"шт","s":0.54,"p":1100.0,"c":"доска"},{"id":128,"n":"Строганная дощечка профил АВ — 20 мм × 155 мм × 3 м","t":"шт","s":0.465,"p":1400.0,"c":"доска"},{"id":129,"n":"Строганная дощечка профил АВ — 35 мм × 145 мм × 5.1-6 м","t":"шт","s":0.8047,"p":2120.0,"c":"доска"},{"id":130,"n":"Строганная дощечка профил АВС — 35 мм × 145 мм × 3 м","t":"шт","s":0.435,"p":2120.0,"c":"доска"},{"id":131,"n":"Строганная дощечка профил — 40 мм × 120 мм × 3-4 м","t":"шт","s":0.42,"p":2000.0,"c":"доска"},{"id":132,"n":"Строганная дощечка профил — 40 мм × 146 мм × 3-4 м","t":"шт","s":0.511,"p":2500.0,"c":"доска"},{"id":133,"n":"Строганная дощечка профил — 40 мм × 96 мм × 3-6 м","t":"шт","s":0.432,"p":1700.0,"c":"доска"},{"id":134,"n":"Строганная дощечка С — 30 мм × 105 мм × 4 м","t":"шт","s":0.42,"p":1100.0,"c":"доска"},{"id":135,"n":"Строганная дощечка С — 30 мм × 110 мм × 3 м","t":"шт","s":0.33,"p":1325.0,"c":"доска"},{"id":136,"n":"Строганная дощечка С — 45 мм × 105 мм × 3 м","t":"шт","s":0.315,"p":1900.0,"c":"доска"},{"id":137,"n":"Строганная дощечка сосна А — 45 мм × 105 мм × 2.85 м","t":"шт","s":0.2993,"p":2300.0,"c":"доска"},{"id":138,"n":"Строганная дощечка сосна АВ — 45 мм × 120 мм × 3-6 м","t":"шт","s":0.54,"p":2350.0,"c":"доска"},{"id":139,"n":"Строганная дощечка сосна профил — 14 мм × 96 мм × 4 м","t":"шт","s":0.384,"p":700.0,"c":"доска"},{"id":140,"n":"Строганная дощечка термо сосна — 20 мм × 120 мм × 4 м","t":"шт","s":0.48,"p":1450.0,"c":"доска"},{"id":141,"n":"Строганная дощечка термо сосна — 20 мм × 145 мм × 4 м","t":"шт","s":0.58,"p":1850.0,"c":"доска"},{"id":142,"n":"Строганная дощечка — 18 мм × 130 мм × 2 м","t":"шт","s":0.26,"p":900.0,"c":"доска"},{"id":143,"n":"Строганная дощечка — 48 мм × 170 мм × 3 м","t":"шт","s":0.51,"p":3500.0,"c":"доска"},{"id":144,"n":"Половой шпунт сосна АВ — 28 мм × 146 мм × 4-6 м","t":"м²","s":0.73,"p":11000.0,"c":"доска пола"},{"id":145,"n":"Половой шпунт сосна АВ — 35 мм × 125 мм × 6 м","t":"м²","s":0.75,"p":14300.0,"c":"доска пола"},{"id":146,"n":"Половой шпунт сосна АВ — 35 мм × 145 мм × 4-5.4 м","t":"м²","s":0.6815,"p":14300.0,"c":"доска пола"},{"id":147,"n":"Половой шпунт сосна В — 27 мм × 100 мм × 3 м","t":"м²","s":0.3,"p":9500.0,"c":"доска пола"},{"id":148,"n":"Половой шпунт сосна С — 24 мм × 96 мм × 4 м","t":"м²","s":0.384,"p":7600.0,"c":"доска пола"},{"id":149,"n":"Половой шпунт сосна С — 28 мм × 146 мм × 3 м","t":"м²","s":0.438,"p":8300.0,"c":"доска пола"},{"id":150,"n":"Половой шпунт сосна С — 36 мм × 135 мм × 6 м","t":"м²","s":0.81,"p":11000.0,"c":"доска пола"},{"id":151,"n":"Половой шпунт сосна С — 36 мм × 146 мм × 4 м","t":"м²","s":0.584,"p":11000.0,"c":"доска пола"},{"id":152,"n":"Половой шпунт сосна С — 40 мм × 146 мм × 3 м","t":"м²","s":0.438,"p":14800.0,"c":"доска пола"},{"id":153,"n":"Столешница круглая береза ø1000мм","t":"шт","s":0,"p":25000.0,"c":"изделия из дерева"},{"id":154,"n":"Столешница круглая береза термо ø800мм","t":"шт","s":0,"p":22000.0,"c":"изделия из дерева"},{"id":155,"n":"Столешница овал береза 800×1600","t":"шт","s":0,"p":27000.0,"c":"изделия из дерева"},{"id":156,"n":"Столешница прямоуг. береза термо 700×1500","t":"шт","s":0,"p":38000.0,"c":"изделия из дерева"},{"id":157,"n":"Ступень береза АВ","t":"шт","s":0,"p":10500.0,"c":"изделия из дерева"},{"id":158,"n":"Ступень сосна АВ","t":"шт","s":0,"p":9000.0,"c":"изделия из дерева"},{"id":159,"n":"Ступень сосна АВ сращенная","t":"шт","s":0,"p":13000.0,"c":"изделия из дерева"},{"id":160,"n":"Ступень сосна АВ сращенная","t":"шт","s":0,"p":14500.0,"c":"изделия из дерева"},{"id":161,"n":"Ступень сосна В","t":"шт","s":0,"p":10500.0,"c":"изделия из дерева"},{"id":162,"n":"Имитация бруса АВ сосна — 16 мм × 145 мм × 5.4-6 м","t":"м²","s":0.8265,"p":7000.0,"c":"имитация бруса"},{"id":163,"n":"Имитация бруса АВ сосна — 16 мм × 146 мм × 3 м","t":"м²","s":0.438,"p":7000.0,"c":"имитация бруса"},{"id":164,"n":"Имитация бруса АВ сосна — 20 мм × 145 мм × 5.4-6 м","t":"м²","s":0.8265,"p":8200.0,"c":"имитация бруса"},{"id":165,"n":"Имитация бруса В лиственница — 18 мм × 130 мм × 3 м","t":"м²","s":0.39,"p":9000.0,"c":"имитация бруса"},{"id":166,"n":"Имитация бруса ВС сосна — 20 мм × 116 мм × 4 м","t":"м²","s":0.464,"p":7000.0,"c":"имитация бруса"},{"id":167,"n":"Имитация бруса ВС сосна — 20 мм × 146 мм × 4 м","t":"м²","s":0.584,"p":8000.0,"c":"имитация бруса"},{"id":168,"n":"Имитация бруса С сосна — 16 мм × 145 мм × 6 м","t":"м²","s":0.87,"p":6000.0,"c":"имитация бруса"},{"id":169,"n":"Имитация бруса С сосна — 20 мм × 145 мм × 6 м","t":"м²","s":0.87,"p":7000.0,"c":"имитация бруса"},{"id":170,"n":"Брус клеёный А — 105 мм × 105 мм × 2.85-3 м","t":"пог.м","s":2.925,"p":5900.0,"c":"клееный брус"},{"id":171,"n":"Брус клеёный В — 100 мм × 100 мм × 4 м","t":"пог.м","s":4.0,"p":5700.0,"c":"клееный брус"},{"id":172,"n":"Брус клеёный В — 120 мм × 120 мм × 2.85 м","t":"пог.м","s":2.85,"p":7500.0,"c":"клееный брус"},{"id":173,"n":"Брус клеёный В — 85 мм × 145 мм × 6 м","t":"пог.м","s":6.0,"p":6200.0,"c":"клееный брус"},{"id":174,"n":"Брус клеёный В — 90 мм × 145 мм × 6 м","t":"пог.м","s":6.0,"p":6500.0,"c":"клееный брус"},{"id":175,"n":"Брус клеёный В — 90 мм × 195 мм × 6 м","t":"пог.м","s":6.0,"p":9800.0,"c":"клееный брус"},{"id":176,"n":"Брус клеёный С — 105 мм × 120 мм × 3.65 м","t":"пог.м","s":3.65,"p":6900.0,"c":"клееный брус"},{"id":177,"n":"Брус клеёный С — 135 мм × 190 мм × 3 м","t":"пог.м","s":3.0,"p":11600.0,"c":"клееный брус"},{"id":178,"n":"Брус клеёный С — 90 мм × 90 мм × 2.7-3 м","t":"пог.м","s":2.85,"p":4700.0,"c":"клееный брус"},{"id":179,"n":"Брус клеёный сорт А — 85 мм × 90 мм × 2.5 м","t":"пог.м","s":2.5,"p":4400.0,"c":"клееный брус"},{"id":180,"n":"Брус клеёный — 80 мм × 100 мм × 3 м","t":"пог.м","s":3.0,"p":4500.0,"c":"клееный брус"},{"id":181,"n":"Щит сращенный лиственница А — 18 мм × 600 мм × 2.5 м","t":"шт","s":1.5,"p":37000.0,"c":"мебельный щит"},{"id":182,"n":"Щит сращенный сосна АВ — 18 мм × 600 мм × 3 м","t":"шт","s":1.8,"p":25000.0,"c":"мебельный щит"},{"id":183,"n":"Щит сращенный сосна АВ — 18 мм × 600 мм × 3.5 м","t":"шт","s":2.1,"p":30000.0,"c":"мебельный щит"},{"id":184,"n":"Щит сращенный сосна АВ — 18 мм × 800 мм × 3 м","t":"шт","s":2.4,"p":33000.0,"c":"мебельный щит"},{"id":185,"n":"Щит сращенный сосна АВ — 28 мм × 1220 мм × 2.5 м","t":"шт","s":3.05,"p":65000.0,"c":"мебельный щит"},{"id":186,"n":"Щит сращенный сосна АВ — 40 мм × 1220 мм × 3 м","t":"шт","s":3.66,"p":111000.0,"c":"мебельный щит"},{"id":187,"n":"Щит сращенный сосна АВ — 40 мм × 800 мм × 3.5 м","t":"шт","s":2.8,"p":85000.0,"c":"мебельный щит"},{"id":188,"n":"Щит сращенный сосна Э — 18 мм × 1220 мм × 2.5 м","t":"шт","s":3.05,"p":53000.0,"c":"мебельный щит"},{"id":189,"n":"Щит сращенный сосна Э — 18 мм × 800 мм × 3.5 м","t":"шт","s":2.8,"p":48000.0,"c":"мебельный щит"},{"id":190,"n":"Щит сращенный сосна Э — 28 мм × 800 мм × 3.5 м","t":"шт","s":2.8,"p":74000.0,"c":"мебельный щит"},{"id":191,"n":"Щит сращенный сосна Э — 40 мм × 1220 мм × 2.5 м","t":"шт","s":3.05,"p":117000.0,"c":"мебельный щит"},{"id":192,"n":"Щит сращенный сосна Э — 40 мм × 800 мм × 2 м","t":"шт","s":1.6,"p":60000.0,"c":"мебельный щит"},{"id":193,"n":"Щит сращенный сосна Э — 40 мм × 800 мм × 3 м","t":"шт","s":2.4,"p":90000.0,"c":"мебельный щит"},{"id":194,"n":"Щит сращенный сосна Э — 40 мм × 800 мм × 3.5 м","t":"шт","s":2.8,"p":105000.0,"c":"мебельный щит"},{"id":195,"n":"Щит цельноламел. АВ — 18 мм × 1220 мм × 2.5 м","t":"шт","s":3.05,"p":40000.0,"c":"мебельный щит"},{"id":196,"n":"Щит цельноламел. АВ — 18 мм × 800 мм × 2.5 м","t":"шт","s":2.0,"p":27000.0,"c":"мебельный щит"},{"id":197,"n":"Щит цельноламел. АВ — 18 мм × 800 мм × 3 м","t":"шт","s":2.4,"p":33000.0,"c":"мебельный щит"},{"id":198,"n":"Щит цельноламел. АВ — 28 мм × 1220 мм × 2.5 м","t":"шт","s":3.05,"p":69000.0,"c":"мебельный щит"},{"id":199,"n":"Щит цельноламел. АВ — 40 мм × 1220 мм × 2 м","t":"шт","s":2.44,"p":75000.0,"c":"мебельный щит"},{"id":200,"n":"Щит цельноламел. АВ — 40 мм × 1220 мм × 2.5 м","t":"шт","s":3.05,"p":92000.0,"c":"мебельный щит"},{"id":201,"n":"Щит цельноламел. АВ — 40 мм × 1220 мм × 3 м","t":"шт","s":3.66,"p":111000.0,"c":"мебельный щит"},{"id":202,"n":"Щит цельноламел. АВ — 40 мм × 800 мм × 2 м","t":"шт","s":1.6,"p":48000.0,"c":"мебельный щит"},{"id":203,"n":"Щит цельноламел. АВ — 40 мм × 800 мм × 3 м","t":"шт","s":2.4,"p":73000.0,"c":"мебельный щит"},{"id":204,"n":"Щит цельноламел. В — 28 мм × 800 мм × 3 м","t":"шт","s":2.4,"p":45000.0,"c":"мебельный щит"},{"id":205,"n":"Щит цельноламел. сосна АВ — 18 мм × 600 мм × 2 м","t":"шт","s":1.2,"p":17000.0,"c":"мебельный щит"},{"id":206,"n":"Щит цельноламел. сосна В — 18 мм × 600 мм × 3 м","t":"шт","s":1.8,"p":25000.0,"c":"мебельный щит"},{"id":207,"n":"Планкен лиственница АВ — 20 мм × 110 мм × 4 м","t":"пог.м","s":4.0,"p":1450.0,"c":"планкен"},{"id":208,"n":"Планкен лиственница АВ — 20 мм × 120 мм × 3 м","t":"пог.м","s":3.0,"p":1530.0,"c":"планкен"},{"id":209,"n":"Планкен лиственница АВ — 20 мм × 140 мм × 3 м","t":"пог.м","s":3.0,"p":1700.0,"c":"планкен"},{"id":210,"n":"Планкен лиственница В — 20 мм × 100 мм × 3 м","t":"пог.м","s":3.0,"p":1250.0,"c":"планкен"},{"id":211,"n":"Планкен лиственница В — 20 мм × 115 мм × 2.7 м","t":"пог.м","s":2.7,"p":1350.0,"c":"планкен"},{"id":212,"n":"Планкен лиственница В — 20 мм × 140 мм × 3 м","t":"пог.м","s":3.0,"p":1500.0,"c":"планкен"},{"id":213,"n":"Планкен лиственница В — 20 мм × 90 мм × 2.7-4 м","t":"пог.м","s":3.35,"p":950.0,"c":"планкен"},{"id":214,"n":"Планкен лиственница С — 20 мм × 100 мм × 3 м","t":"пог.м","s":3.0,"p":900.0,"c":"планкен"},{"id":215,"n":"Планкен лиственница С — 20 мм × 96 мм × 4 м","t":"пог.м","s":4.0,"p":950.0,"c":"планкен"},{"id":216,"n":"Планкен скошенный лиственница АВ — 20 мм × 145 мм × 1-1.5 м","t":"пог.м","s":1.25,"p":1600.0,"c":"планкен"},{"id":217,"n":"Планкен скошенный сосна АВ — 20 мм × 145 мм × 2-6 м","t":"пог.м","s":4.0,"p":1270.0,"c":"планкен"},{"id":218,"n":"Планкен скошенный сосна АВ — 28 мм × 68 мм × 2 м","t":"пог.м","s":2.0,"p":600.0,"c":"планкен"},{"id":219,"n":"Планкен сосна АВ — 14 мм × 96 мм × 4 м","t":"пог.м","s":4.0,"p":700.0,"c":"планкен"},{"id":220,"n":"Планкен сосна АВ — 20 мм × 120 мм × 3-6 м","t":"пог.м","s":4.5,"p":1100.0,"c":"планкен"},{"id":221,"n":"Планкен сосна АВ — 20 мм × 95 мм × 2-4 м","t":"пог.м","s":3.0,"p":820.0,"c":"планкен"},{"id":222,"n":"Планкен термо сосна вельвет С — 12 мм × 120 мм × 4 м","t":"пог.м","s":4.0,"p":1300.0,"c":"планкен"},{"id":223,"n":"Планкен термо сосна ВС — 20 мм × 120 мм × 4 м","t":"пог.м","s":4.0,"p":1450.0,"c":"планкен"},{"id":224,"n":"Планкен термо сосна — 20 мм × 145 мм × 4 м","t":"пог.м","s":4.0,"p":1900.0,"c":"планкен"},{"id":225,"n":"Планкен термо сосна — 30 мм × 100 мм × 4 м","t":"пог.м","s":4.0,"p":1450.0,"c":"планкен"},{"id":226,"n":"Галтель липа термо — 14 мм × 30 мм × 2.5 м","t":"пог.м","s":2.5,"p":1500.0,"c":"погонаж"},{"id":227,"n":"Галтель липа термо — 14 мм × 45 мм × 1.8 м","t":"пог.м","s":1.8,"p":1500.0,"c":"погонаж"},{"id":228,"n":"Галтель липа — 25 мм × 35 мм × 2.5 м","t":"пог.м","s":2.5,"p":950.0,"c":"погонаж"},{"id":229,"n":"Галтель осина — 13 мм × 30 мм × 2.2 м","t":"пог.м","s":2.2,"p":450.0,"c":"погонаж"},{"id":230,"n":"Галтель плинтус сосна — 13 мм × 45 мм × 3 м","t":"пог.м","s":3.0,"p":650.0,"c":"погонаж"},{"id":231,"n":"Галтель плинтус сосна — 13 мм × 55 мм × 3 м","t":"пог.м","s":3.0,"p":750.0,"c":"погонаж"},{"id":232,"n":"Галтель сосна треугольник — 13 мм × 25 мм × 2.5 м","t":"пог.м","s":2.5,"p":480.0,"c":"погонаж"},{"id":233,"n":"Галтель сосна — 13 мм × 30 мм × 2.2 м","t":"пог.м","s":2.2,"p":450.0,"c":"погонаж"},{"id":234,"n":"Галтель сосна — 13 мм × 31 мм × 2.5 м","t":"пог.м","s":2.5,"p":480.0,"c":"погонаж"},{"id":235,"n":"Наличник липа 70мм — 15 мм × 70 мм × 2.7 м","t":"пог.м","s":2.7,"p":1900.0,"c":"погонаж"},{"id":236,"n":"Наличник липа термо — 14 мм × 70 мм × 2.7 м","t":"пог.м","s":2.7,"p":2300.0,"c":"погонаж"},{"id":237,"n":"Наличник сосна 70мм — 13 мм × 70 мм × 2.2 м","t":"пог.м","s":2.2,"p":850.0,"c":"погонаж"},{"id":238,"n":"Наличник сосна 90мм — 13 мм × 90 мм × 2.2-3 м","t":"пог.м","s":2.6,"p":1100.0,"c":"погонаж"},{"id":239,"n":"Нащельник плоский — 10 мм × 30 мм × 2.2 м","t":"пог.м","s":2.2,"p":350.0,"c":"погонаж"},{"id":240,"n":"Нащельник сосна грибок — 10 мм × 30 мм × 2.5 м","t":"пог.м","s":2.5,"p":370.0,"c":"погонаж"},{"id":241,"n":"Нащельник сосна — 10 мм × 30 мм × 2.2 м","t":"пог.м","s":2.2,"p":450.0,"c":"погонаж"},{"id":242,"n":"Плинтус волна 60мм — 13 мм × 60 мм × 2.5 м","t":"пог.м","s":2.5,"p":900.0,"c":"погонаж"},{"id":243,"n":"Плинтус евро 60мм с выступом — 13 мм × 60 мм × 2.5 м","t":"пог.м","s":2.5,"p":900.0,"c":"погонаж"},{"id":244,"n":"Плинтус сосна евро — 18 мм × 65 мм × 3 м","t":"пог.м","s":3.0,"p":950.0,"c":"погонаж"},{"id":245,"n":"Плинтус сосна евро — 18 мм × 90 мм × 3 м","t":"пог.м","s":3.0,"p":1350.0,"c":"погонаж"},{"id":246,"n":"Уголок липа термо — 22 мм × 22 мм × 2.5 м","t":"пог.м","s":2.5,"p":1800.0,"c":"погонаж"},{"id":247,"n":"Уголок липа — 25 мм × 25 мм × 2.5 м","t":"пог.м","s":2.5,"p":1500.0,"c":"погонаж"},{"id":248,"n":"Уголок сосна — 30 мм × 30 мм × 2.5-3 м","t":"пог.м","s":2.75,"p":750.0,"c":"погонаж"},{"id":249,"n":"Уголок сосна — 40 мм × 40 мм × 2.5 м","t":"пог.м","s":2.5,"p":850.0,"c":"погонаж"},{"id":250,"n":"Уголок сосна — 40 мм × 60 мм × 2.5 м","t":"пог.м","s":2.5,"p":1500.0,"c":"погонаж"},{"id":251,"n":"Уголок сосна — 60 мм × 60 мм × 2.5 м","t":"пог.м","s":2.5,"p":1550.0,"c":"погонаж"},{"id":252,"n":"Шпатик 10×10 — 10 мм × 10 мм × 2.5 м","t":"пог.м","s":2.5,"p":270.0,"c":"погонаж"},{"id":253,"n":"2 в 1 Акватекс","t":"шт","s":0,"p":5000.0,"c":"покрытия"},{"id":254,"n":"2 в 1 Акватекс","t":"шт","s":0,"p":13000.0,"c":"покрытия"},{"id":255,"n":"Бальзам Акватекс","t":"шт","s":0,"p":9000.0,"c":"покрытия"},{"id":256,"n":"Бальзам Акватекс","t":"шт","s":0,"p":23000.0,"c":"покрытия"},{"id":257,"n":"Полок кедр АВ — 28 мм × 90 мм × 3 м","t":"пог.м","s":3.0,"p":1500.0,"c":"полок для бани"},{"id":258,"n":"Полок липа А — 26 мм × 90 мм × 2.1-2.7 м","t":"пог.м","s":2.4,"p":3000.0,"c":"полок для бани"},{"id":259,"n":"Полок липа АВ — 26 мм × 90 мм × 1.9-2.4 м","t":"пог.м","s":2.15,"p":2700.0,"c":"полок для бани"},{"id":260,"n":"Полок липа В — 26 мм × 90 мм × 1-1.5 м","t":"пог.м","s":1.25,"p":1900.0,"c":"полок для бани"},{"id":261,"n":"Полок липа В — 26 мм × 90 мм × 1.9-2.5 м","t":"пог.м","s":2.2,"p":2500.0,"c":"полок для бани"},{"id":262,"n":"Полок липа термо — 26 мм × 90 мм × 2.2 м","t":"пог.м","s":2.2,"p":3500.0,"c":"полок для бани"},{"id":263,"n":"Полок липа Э — 26 мм × 90 мм × 2.6-2.7 м","t":"пог.м","s":2.65,"p":3250.0,"c":"полок для бани"},{"id":264,"n":"Полок лиственница В — 28 мм × 68 мм × 4 м","t":"пог.м","s":4.0,"p":850.0,"c":"полок для бани"},{"id":265,"n":"Полок осина А — 26 мм × 90 мм × 1-1.8 м","t":"пог.м","s":1.4,"p":1800.0,"c":"полок для бани"},{"id":266,"n":"Полок осина А — 26 мм × 90 мм × 2-2.7 м","t":"пог.м","s":2.35,"p":2000.0,"c":"полок для бани"},{"id":267,"n":"Полок осина С — 28 мм × 90 мм × 4 м","t":"пог.м","s":4.0,"p":1000.0,"c":"полок для бани"},{"id":268,"n":"Террасная доска вельвет сосна С — 20 мм × 120 мм × 4 м","t":"м²","s":0.48,"p":7400.0,"c":"террасная доска"},{"id":269,"n":"Террасная доска вильвет сосна С — 28 мм × 145 мм × 4 м","t":"м²","s":0.58,"p":11150.0,"c":"террасная доска"},{"id":270,"n":"Террасная доска лиственница А — 27 мм × 142 мм × 4 м","t":"м²","s":0.568,"p":16500.0,"c":"террасная доска"},{"id":271,"n":"Террасная доска лиственница А — 27 мм × 145 мм × 4 м","t":"м²","s":0.58,"p":15500.0,"c":"террасная доска"},{"id":272,"n":"Террасная доска лиственница АВ — 27 мм × 142 мм × 4 м","t":"м²","s":0.568,"p":16500.0,"c":"террасная доска"},{"id":273,"n":"Террасная доска лиственница АВ — 27 мм × 142 мм × 5.1 м","t":"м²","s":0.7242,"p":15500.0,"c":"террасная доска"},{"id":274,"n":"Террасная доска лиственница АВ — 28 мм × 120 мм × 3-4 м","t":"м²","s":0.42,"p":17500.0,"c":"террасная доска"},{"id":275,"n":"Террасная доска лиственница АВ — 28 мм × 95 мм × 4 м","t":"м²","s":0.38,"p":17500.0,"c":"террасная доска"},{"id":276,"n":"Террасная доска лиственница АВ — 45 мм × 120 мм × 4 м","t":"м²","s":0.48,"p":29500.0,"c":"террасная доска"},{"id":277,"n":"Террасная доска лиственница АВ — 45 мм × 142 мм × 4 м","t":"м²","s":0.568,"p":29200.0,"c":"террасная доска"},{"id":278,"n":"Террасная доска лиственница АВ — 45 мм × 142 мм × 6 м","t":"м²","s":0.852,"p":29500.0,"c":"террасная доска"},{"id":279,"n":"Террасная доска лиственница В — 27 мм × 142 мм × 2.7-3 м","t":"м²","s":0.4047,"p":12500.0,"c":"террасная доска"},{"id":280,"n":"Террасная доска лиственница С — 27 мм × 142 мм × 3 м","t":"м²","s":0.426,"p":11000.0,"c":"террасная доска"},{"id":281,"n":"Террасная доска палубная сосна АВ — 35 мм × 145 мм × 5.1-5.4 м","t":"м²","s":0.7612,"p":14500.0,"c":"террасная доска"},{"id":282,"n":"Террасная доска палубная сосна ВС — 27 мм × 140 мм × 6 м","t":"м²","s":0.84,"p":10100.0,"c":"террасная доска"},{"id":283,"n":"Террасная доска палубная сосна С — 26 мм × 140 мм × 4 м","t":"м²","s":0.56,"p":7200.0,"c":"террасная доска"},{"id":284,"n":"Террасная доска палубная термо сосна АВ — 30 мм × 100 мм × 4 м","t":"м²","s":0.4,"p":14500.0,"c":"террасная доска"},{"id":285,"n":"Террасная доска палубная термо сосна С — 26 мм × 140 мм × 4 м","t":"м²","s":0.56,"p":14000.0,"c":"террасная доска"},{"id":286,"n":"Террасная доска термо сосна — 42 мм × 140 мм × 4 м","t":"м²","s":0.56,"p":21500.0,"c":"террасная доска"},{"id":287,"n":"ДВП — 2.7 мм × 1700 мм × 2.75 м","t":"шт","s":4.675,"p":3500.0,"c":"фанера"},{"id":288,"n":"Фанера береза ЛБФФ ФСФ сорт 1/1 — 18 мм × 1220 мм × 2.44 м","t":"шт","s":2.9768,"p":19000.0,"c":"фанера"},{"id":289,"n":"Фанера береза ЛБФФ ФСФ сорт 1/1 — 21 мм × 1220 мм × 2.44 м","t":"шт","s":2.9768,"p":24500.0,"c":"фанера"},{"id":290,"n":"Фанера береза ФК сорт 2/4 — 12 мм × 1525 мм × 1.52 м","t":"шт","s":2.318,"p":9100.0,"c":"фанера"},{"id":291,"n":"Фанера береза ФК сорт 2/4 — 15 мм × 1525 мм × 1.52 м","t":"шт","s":2.318,"p":12700.0,"c":"фанера"},{"id":292,"n":"Фанера береза ФК сорт 3/4 — 12 мм × 1525 мм × 1.52 м","t":"шт","s":2.318,"p":8600.0,"c":"фанера"},{"id":293,"n":"Фанера береза ФСФ сорт III/IV — 18 мм × 1220 мм × 2.44 м","t":"шт","s":2.9768,"p":15500.0,"c":"фанера"},{"id":294,"n":"Фанера ламин. F|F — 15 мм × 1220 мм × 2.44 м","t":"шт","s":2.9768,"p":17300.0,"c":"фанера"},{"id":295,"n":"Фанера ФК сорт 2/4 Е1 — 8 мм × 1525 мм × 1.52 м","t":"шт","s":2.318,"p":7200.0,"c":"фанера"},{"id":296,"n":"Фанера ФК сорт 3/5 Е1 — 15 мм × 1525 мм × 1.52 м","t":"шт","s":2.318,"p":11000.0,"c":"фанера"},{"id":297,"n":"Фанера хвойная сорт 1/3 — 18 мм × 1220 мм × 2.44 м","t":"шт","s":2.9768,"p":17000.0,"c":"фанера"},{"id":298,"n":"ФСФ береза BB/C сорт 2/4 — 18 мм × 1220 мм × 2.44 м","t":"шт","s":2.9768,"p":16900.0,"c":"фанера"},{"id":299,"n":"ФСФ береза сорт 1/2 В/ВВ — 12 мм × 1220 мм × 2.44 м","t":"шт","s":2.9768,"p":13000.0,"c":"фанера"},{"id":300,"n":"ФСФ береза сорт 1/2 В/ВВ — 6 мм × 1220 мм × 2.44 м","t":"шт","s":2.9768,"p":8700.0,"c":"фанера"},{"id":301,"n":"ФСФ береза сорт 1/2 В/ВВ — 9 мм × 1220 мм × 2.44 м","t":"шт","s":2.9768,"p":11000.0,"c":"фанера"},{"id":302,"n":"ФСФ береза сорт 2/4 — 15 мм × 1220 мм × 2.44 м","t":"шт","s":2.9768,"p":14600.0,"c":"фанера"}];
+
+let items=[],vals={},modes={},activeFilter='all',_toastT;
+let _uid=CATALOG.length+1;
+function uid(){return++_uid;}
+
+function loadCatalog(){
+    items=CATALOG.map(p=>({id:p.id,name:p.n,type:p.t,size:p.s,price:p.p,category:p.c}));
+    render();
+    document.getElementById('clearBtn').style.display='';
+}
+
+const dropZone=document.getElementById('dropZone');
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over');});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f)parseFile(f);});
+function handleFile(e){const f=e.target.files[0];if(f)parseFile(f);}
+
+function parseFile(file){
+    const r=new FileReader();
+    r.onload=e=>{
+        try{
+            const rows=parseCSV(e.target.result);
+            if(rows.length<2){toast('⚠️ Файл пустой');return;}
+            const added=[];
+            for(let i=1;i<rows.length;i++){
+                const[name='',rawType='',rawSize='',rawPrice='']=rows[i];
+                const n=name.trim(),sz=parseFloat((rawSize||'').replace(',','.')),pr=parseFloat((rawPrice||'').replace(',','.'));
+                if(!n||isNaN(pr)||pr<0) continue;
+                const tp=detectType(rawType);
+                if(tp!=='шт'&&(isNaN(sz)||sz<=0)) continue;
+                added.push({id:uid(),name:n,type:tp,size:isNaN(sz)?0:sz,price:pr,category:''});
+            }
+            if(!added.length){toast('⚠️ Не найдено строк');return;}
+            items=[...items,...added];render();
+            toast(`✅ Загружено ${added.length} позиций`);
+        }catch(err){toast('❌ '+err.message);}
+    };
+    r.readAsText(file,'UTF-8');
+}
+function detectType(s){const v=(s||'').toLowerCase().trim();if(v.includes('шт')||v==='piece') return 'шт';if(v.includes('пог')||v.includes('lm')||v.includes('п.м')||v.includes('linear')) return 'пог.м';return 'м²';}
+function parseCSV(text){return text.split(/\r?\n/).filter(l=>l.trim()).map(line=>{const cols=[];let cur='',inQ=false;for(const ch of line){if(ch==='"'){inQ=!inQ;continue;}if((ch===','||ch===';')&&!inQ){cols.push(cur);cur='';}else cur+=ch;}cols.push(cur);return cols.map(c=>c.trim());});}
+
+function toggleManual(){const f=document.getElementById('manualForm');const show=!f.classList.contains('show');f.classList.toggle('show',show);document.getElementById('manualToggle').style.background=show?'rgba(168,85,247,0.18)':'';}
+function toggleSizeField(){const tp=document.getElementById('mType').value;document.getElementById('mSizeField').style.display=tp==='шт'?'none':'';document.getElementById('mPriceLbl').textContent=tp==='шт'?'Цена за шт ₸':'Цена за ед. ₸';}
+function addManual(){
+    const name=document.getElementById('mName').value.trim(),type=document.getElementById('mType').value;
+    const size=parseFloat(document.getElementById('mSize').value),price=parseFloat(document.getElementById('mPrice').value);
+    if(!name) return toast('⚠️ Введите название');
+    if(type!=='шт'&&(isNaN(size)||size<=0)) return toast('⚠️ Укажите размер штуки');
+    if(isNaN(price)||price<0) return toast('⚠️ Укажите цену');
+    items.push({id:uid(),name,type,size:type==='шт'?0:size,price,category:''});
+    render();toast(`✅ ${name}`);
+    ['mName','mSize','mPrice'].forEach(id=>document.getElementById(id).value='');
+}
+
+function render(){
+    const cb=document.getElementById('controlsBar'),cc=document.getElementById('countChip'),rb=document.getElementById('resetBtn');
+    if(!items.length){document.getElementById('grid').innerHTML=`<div class="empty"><span class="empty-icon">🌿</span><div class="empty-title">Прайс не загружен</div></div>`;cb.classList.remove('show');cc.style.display='none';document.getElementById('summarySection').classList.remove('show');return;}
+    cb.classList.add('show');cc.style.display='';rb.style.display='';
+    const sq=items.filter(p=>p.type==='м²').length,lm=items.filter(p=>p.type==='пог.м').length,pc=items.filter(p=>p.type==='шт').length;
+    cc.textContent=`${items.length} · ${sq} м² · ${lm} пог.м · ${pc} шт`;
+    filter();
+}
+
+function filter(){
+    const raw=(document.getElementById('searchInput').value||'').toLowerCase().trim();
+    const tokens=raw.split(/\s+/).filter(Boolean);
+    const visible=items.filter(p=>{
+        const hay=(p.name+' '+(p.category||'')).toLowerCase();
+        return(tokens.length===0||tokens.every(t=>hay.includes(t)))&&(activeFilter==='all'||p.type===activeFilter);
+    });
+    const grid=document.getElementById('grid');
+    if(!visible.length){grid.innerHTML=`<div class="empty"><span class="empty-icon">🔍</span><div class="empty-title">Ничего не найдено</div><div>Попробуйте другой запрос или фильтр</div></div>`;return;}
+    grid.innerHTML=visible.map((p,i)=>cardHTML(p,i)).join('');
+    visible.forEach(p=>{const inp=document.getElementById('i_'+p.id);if(inp&&vals[p.id]!=null){inp.value=vals[p.id];calcCard(p.id);}});
+}
+
+function cardHTML(p,i){
+    const isPcs=p.type==='шт',isSqm=p.type==='м²';
+    const bCls=isPcs?'badge-pcs':(isSqm?'badge-m2':'badge-lm');
+    const bIco=isPcs?'🪵':(isSqm?'⬛':'📏');
+    const mode=modes[p.id]||'normal';
+
+    const meta=isPcs?`
+        ${p.size>0?`<div class="meta"><span class="meta-lbl">Площадь листа</span><span class="meta-val">${fmt(p.size)} м²</span></div>`:''}
+        <div class="meta"><span class="meta-lbl">Цена за шт</span><span class="meta-val">${fmtP(p.price)} ₸</span></div>`:`
+        <div class="meta"><span class="meta-lbl">1 шт =</span><span class="meta-val">${fmt(p.size)} ${p.type}</span></div>
+        <div class="meta"><span class="meta-lbl">Цена / ${p.type}</span><span class="meta-val">${fmtP(p.price)} ₸</span></div>
+        <div class="meta"><span class="meta-lbl">≈ цена / шт</span><span class="meta-val">${fmtP(p.price*p.size)} ₸</span></div>`;
+
+    const modeSw=!isPcs?`<div class="mode-sw">
+        <button class="ms-btn ${mode==='normal'?'ms-on':''}" onclick="setMode(${p.id},'normal')">${isSqm?'м²':'пог.м'} → штуки</button>
+        <button class="ms-btn ${mode==='reverse'?'ms-on':''}" onclick="setMode(${p.id},'reverse')">штуки → ${isSqm?'м²':'пог.м'}</button>
+    </div>`:'';
+
+    const ph=isPcs?'Количество шт':(mode==='normal'?(isSqm?'Площадь м²':'Длина пог.м'):'Количество шт');
+    const ul=isPcs?'шт':(mode==='normal'?p.type:'шт');
+
+    const result=isPcs?`<div class="res-row"><span class="res-lbl">Итого:</span><span class="res-val glow" id="total_${p.id}">—</span></div>`:
+        mode==='normal'?`
+        <div class="res-row"><span class="res-lbl">Штук (без запаса):</span><span class="res-val" id="pieces_${p.id}">—</span></div>
+        <div class="res-row"><span class="res-lbl">Штук (с запасом):</span><span class="res-val big" id="piecesW_${p.id}">—</span></div>
+        <hr class="res-sep">
+        <div class="res-row"><span class="res-lbl">Итого:</span><span class="res-val glow" id="total_${p.id}">—</span></div>`:
+        `<div class="res-row"><span class="res-lbl">${isSqm?'Покрытие':'Длина'}:</span><span class="res-val big" id="cov_${p.id}">—</span></div>
+        <hr class="res-sep">
+        <div class="res-row"><span class="res-lbl">Итого:</span><span class="res-val glow" id="total_${p.id}">—</span></div>`;
+
+    return `<div class="pcard" id="card_${p.id}" style="animation-delay:${Math.min(i*.03,.5)}s">
+        <div class="pcard-top">
+            <div class="pcard-name">${esc(p.name)}</div>
+            <div class="pcard-actions">
+                <span class="badge ${bCls}">${bIco} ${p.type}</span>
+                <button class="del-btn" onclick="deleteItem(${p.id})">✕</button>
+            </div>
+        </div>
+        ${p.category?`<div class="pcard-cat">${esc(p.category)}</div>`:''}
+        <div class="pcard-meta">${meta}</div>
+        ${modeSw}
+        <div class="pcard-input-row">
+            <input class="pcard-input" id="i_${p.id}" type="number" min="0"
+                step="${(!isPcs&&mode==='reverse')||isPcs?1:.1}"
+                placeholder="${ph}" oninput="onInput(${p.id})">
+            <span class="unit-lbl">${ul}</span>
+        </div>
+        <div class="pcard-result" id="r_${p.id}">${result}</div>
+    </div>`;
+}
+
+function onInput(id){const inp=document.getElementById('i_'+id);const v=parseFloat(inp.value);if(isNaN(v)||v<=0){delete vals[id];}else{vals[id]=v;}calcCard(id);updateSummary();}
+
+function calcCard(id){
+    const p=items.find(x=>x.id===id);
+    const card=document.getElementById('card_'+id),res=document.getElementById('r_'+id);
+    if(!p||!card) return;
+    const v=vals[id];
+    if(!v){res.classList.remove('show');card.classList.remove('active-card');return;}
+    const waste=parseInt(document.getElementById('wasteSelect').value)||0;
+    const mode=modes[id]||'normal';
+    if(p.type==='шт'){
+        document.getElementById('total_'+id).textContent=fmtP(v*p.price)+' ₸';
+    }else if(mode==='normal'){
+        const withW=v*(1+waste/100),pieces=Math.ceil(v/p.size),pW=Math.ceil(withW/p.size);
+        document.getElementById('pieces_'+id).textContent=pieces+' шт';
+        document.getElementById('piecesW_'+id).textContent=pW+' шт';
+        document.getElementById('total_'+id).textContent=fmtP(withW*p.price)+' ₸';
+    }else{
+        const cov=v*p.size;
+        document.getElementById('cov_'+id).textContent=fmt(cov)+' '+(p.type==='м²'?'м²':'пог.м');
+        document.getElementById('total_'+id).textContent=fmtP(cov*p.price)+' ₸';
+    }
+    res.classList.add('show');card.classList.add('active-card');
+}
+
+function setMode(id,mode){modes[id]=mode;delete vals[id];filter();}
+function recalcAll(){Object.keys(vals).forEach(id=>calcCard(+id));updateSummary();}
+
+function updateSummary(){
+    const section=document.getElementById('summarySection');
+    const filled=items.filter(p=>vals[p.id]!=null);
+    if(!filled.length){section.classList.remove('show');return;}
+    section.classList.add('show');
+    const waste=parseInt(document.getElementById('wasteSelect').value)||0;
+    let totalCost=0,totalPieces=0;
+    const rows=filled.map(p=>{
+        const v=vals[p.id],mode=modes[p.id]||'normal';
+        let iC,sC,rC,cost;
+        const bCls=p.type==='шт'?'badge-pcs':(p.type==='м²'?'badge-m2':'badge-lm');
+        if(p.type==='шт'){cost=v*p.price;iC=v+' шт';sC='—';rC=v+' шт';totalPieces+=v;}
+        else if(mode==='normal'){const withW=v*(1+waste/100),pW=Math.ceil(withW/p.size);cost=withW*p.price;iC=fmt(v)+' '+p.type;sC=fmt(p.size)+' '+p.type;rC=pW+' шт';totalPieces+=pW;}
+        else{const cov=v*p.size;cost=cov*p.price;iC=v+' шт';sC=fmt(p.size)+' '+p.type;rC=fmt(cov)+' '+p.type;totalPieces+=v;}
+        totalCost+=cost;
+        return `<tr><td>${esc(p.name)}</td><td><span class="badge ${bCls}" style="font-size:.7rem">${p.type}</span></td><td>${iC}</td><td>${sC}</td><td><strong>${rC}</strong></td><td>${fmtP(p.price)} ₸</td><td style="background:linear-gradient(135deg,#86efac,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">${fmtP(cost)} ₸</td></tr>`;
+    });
+    rows.push(`<tr class="total-row"><td colspan="4"><strong>ИТОГО</strong></td><td><strong>${totalPieces} шт</strong></td><td></td><td style="background:linear-gradient(135deg,#f0abfc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${fmtP(totalCost)} ₸</td></tr>`);
+    document.getElementById('summaryBody').innerHTML=rows.join('');
+    document.getElementById('statsGrid').innerHTML=[
+        [filled.length,'Позиций'],[totalPieces,'Штук итого'],[fmtP(totalCost)+' ₸','Сумма'],[(parseInt(document.getElementById('wasteSelect').value)||0)+'%','Запас'],
+    ].map(([v,l])=>`<div class="stat-box"><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`).join('');
+}
+
+function deleteItem(id){items=items.filter(p=>p.id!==id);delete vals[id];delete modes[id];if(!items.length)document.getElementById('clearBtn').style.display='none';render();updateSummary();toast('🗑 Удалено');}
+function clearAll(){if(!confirm('Очистить список?'))return;items=[];vals={};modes={};document.getElementById('clearBtn').style.display='none';render();updateSummary();toast('🗑 Очищено');}
+function resetAll(){vals={};modes={};document.querySelectorAll('.pcard-input').forEach(i=>i.value='');document.querySelectorAll('.pcard-result').forEach(r=>r.classList.remove('show'));document.querySelectorAll('.pcard').forEach(c=>c.classList.remove('active-card'));document.getElementById('summarySection').classList.remove('show');toast('↺ Сброшено');}
+function setFilter(f,btn){activeFilter=f;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filter();}
+
+function exportCSV(){
+    const waste=parseInt(document.getElementById('wasteSelect').value)||0;
+    const filled=items.filter(p=>vals[p.id]!=null);
+    if(!filled.length){toast('⚠️ Нет данных');return;}
+    const rows=['Название,Тип,Введено,Единица,Результат,Цена (₸),Сумма (₸)'];
+    let total=0;
+    filled.forEach(p=>{
+        const v=vals[p.id],mode=modes[p.id]||'normal';
+        let iV,unit,res,cost;
+        if(p.type==='шт'){cost=v*p.price;iV=v;unit='шт';res=v+' шт';}
+        else if(mode==='normal'){const wW=v*(1+waste/100);cost=wW*p.price;iV=v;unit=p.type;res=Math.ceil(wW/p.size)+' шт';}
+        else{const cov=v*p.size;cost=cov*p.price;iV=v;unit='шт';res=fmt(cov)+' '+p.type;}
+        total+=cost;
+        rows.push(`"${p.name}","${p.type}",${iV},"${unit}","${res}",${p.price},${cost.toFixed(2)}`);
+    });
+    rows.push(`,,,,,"ИТОГО:",${total.toFixed(2)}`);
+    const d=new Date().toLocaleDateString('ru');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob(['﻿'+rows.join('\n')],{type:'text/csv;charset=utf-8'}));
+    a.download=`расчёт_${d}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3);
+    toast('✅ Экспорт готов');
+}
+
+function fmt(n){if(n===0)return '0';const s=n.toString();return s.includes('.')?parseFloat(n.toFixed(4)).toString():s;}
+function fmtP(n){return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(Math.round(n));}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(msg){const el=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;el.classList.add('show');clearTimeout(_toastT);_toastT=setTimeout(()=>el.classList.remove('show'),3200);}
+
+loadCatalog();
+</script>
+</body>
+</html>
